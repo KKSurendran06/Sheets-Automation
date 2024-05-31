@@ -1,0 +1,31 @@
+function countWordAcrossSheets(word) {
+  var sheets = SpreadsheetApp.getActiveSpreadsheet().getSheets();
+  var totalCount = 0;
+  
+  for (var i = 0; i < sheets.length; i++) {
+    var sheet = sheets[i];
+    var range = sheet.getDataRange();
+    var values = range.getValues();
+    
+    for (var row = 0; row < values.length; row++) {
+      for (var col = 0; col < values[row].length; col++) {
+        if (typeof values[row][col] === 'string' && values[row][col].toLowerCase().includes(word.toLowerCase())) {
+          totalCount++;
+        }
+      }
+    }
+  }
+  
+  return totalCount;
+}
+
+function showWordCount() {
+  var ui = SpreadsheetApp.getUi();
+  var response = ui.prompt('Count Word Occurrences', 'Enter the word to count:', ui.ButtonSet.OK_CANCEL);
+  
+  if (response.getSelectedButton() == ui.Button.OK) {
+    var word = response.getResponseText();
+    var count = countWordAcrossSheets(word);
+    ui.alert('The word "' + word + '" occurs ' + count + ' times across all sheets.');
+  }
+}
